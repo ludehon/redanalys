@@ -94,9 +94,9 @@ class RedditReader:
         pass
 
 if __name__ == "__main__":
-    print(f"Launched on {datetime.now().strftime('%y%m%dT%H%M%S')}")
+    print(f"Launched on {datetime.now().strftime('%y%m%dT%H%M%S')} with args={sys.argv}")
     rr = RedditReader(sys.argv[1])
-    all_posts = rr.get_comments_from_subreddit(["stocks", "wallstreetbets", "investing", "stockmarket"], 1)
+    all_posts = rr.get_comments_from_subreddit(["stocks", "wallstreetbets", "investing", "stockmarket"], int(sys.argv[3]))
     file_path = Path(all_posts["date"])
     if file_path.exists():
         print(f"merging data from {all_posts['date']}")
