@@ -21,7 +21,6 @@ def save_json_to_file(json_obj, filename):
 
 def merge_complex_dicts(dict1, dict2):
     merged = dict1.copy()
-
     for key, value in dict2.items():
         if key in merged:
             if isinstance(value, dict) and isinstance(merged[key], dict):
@@ -34,7 +33,6 @@ def merge_complex_dicts(dict1, dict2):
                 merged[key] = value
         else:
             merged[key] = value
-
     return merged
 
 
@@ -96,7 +94,7 @@ class RedditReader:
 
 if __name__ == "__main__":
     rr = RedditReader("credentials.json")
-    all_posts = rr.get_comments_from_subreddit(["stocks"], 100)
+    all_posts = rr.get_comments_from_subreddit(["stocks", "wallstreetbets", "investing", "stockmarket"], 80)
     file_path = Path(all_posts["date"])
     if file_path.exists():
         print(f"merging data from {all_posts['date']}")
