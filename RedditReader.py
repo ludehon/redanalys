@@ -15,7 +15,7 @@ def read_json_file(file_path):
 def save_json_to_file(json_obj, filename):
     try:
         with open(filename, 'w') as file:
-            json.dump(json_obj, file, indent=4)
+            json.dump(json_obj, file, separators=(",", ":"))
         print(f'JSON object saved to {filename} successfully.')
     except Exception as e:
         print(f'Error: {e}')
