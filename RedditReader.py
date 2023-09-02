@@ -62,7 +62,7 @@ class RedditReader:
             posts_json = {}
             # post level
             for post_number, post in enumerate(post_list):
-                print(f"processing post {post_number}/{len(post_list)}")
+                # print(f"processing post {post_number}/{len(post_list)}")
                 post_dict = {
                     "id": post.id,
                     "title": post.title,
@@ -94,16 +94,17 @@ class RedditReader:
         pass
 
 if __name__ == "__main__":
+    print(f"Launched on {datetime.now().strftime('%y%m%dT%H%M%S')}")
     rr = RedditReader(sys.argv[1])
-    all_posts = rr.get_comments_from_subreddit(["stocks", "wallstreetbets", "investing", "stockmarket"], 80)
+    all_posts = rr.get_comments_from_subreddit(["stocks", "wallstreetbets", "investing", "stockmarket"], 1)
     file_path = Path(all_posts["date"])
     if file_path.exists():
         print(f"merging data from {all_posts['date']}")
         existing_data = read_json_file(file_path)
         updated_data = merge_complex_dicts(existing_data, all_posts)
-        save_json_to_file(updated_data, updated_data["date"])
+        save_json_to_file(updated_data, f"{sys.argv[2]}/{updated_data['date']}.json")
         print(f"data from {all_posts['date']} merged successfully")
     else:
         print(f"saving data from {all_posts['date']}")
-        save_json_to_file(all_posts, all_posts["date"])
+        save_json_to_file(all_posts, f"{sys.argv[2]}/{all_posts['date']}.json")
         print(f"data from {all_posts['date']} saved successfully")
