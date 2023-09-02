@@ -1,3 +1,4 @@
+import sys
 import praw
 import json
 from pathlib import Path
@@ -93,7 +94,7 @@ class RedditReader:
         pass
 
 if __name__ == "__main__":
-    rr = RedditReader("credentials.json")
+    rr = RedditReader(sys.argv[1])
     all_posts = rr.get_comments_from_subreddit(["stocks", "wallstreetbets", "investing", "stockmarket"], 80)
     file_path = Path(all_posts["date"])
     if file_path.exists():
