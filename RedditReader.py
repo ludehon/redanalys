@@ -62,7 +62,8 @@ class RedditReader:
             posts_json = {}
             # post level
             for post_number, post in enumerate(post_list):
-                # print(f"processing post {post_number}/{len(post_list)}")
+                if (datetime.utcfromtimestamp(post.created_utc).date() != datetime.utcnow().date()):
+                    continue
                 post_dict = {
                     "id": post.id,
                     "title": post.title,
@@ -93,6 +94,11 @@ class RedditReader:
     def save_comments(self):
         pass
 
+"""
+arg1: credentials
+arg2: saves path
+arg3: post limit
+"""
 if __name__ == "__main__":
     print(f"Launched on {datetime.now().strftime('%y%m%dT%H%M%S')} with args={sys.argv}")
     rr = RedditReader(sys.argv[1])
