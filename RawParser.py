@@ -1,8 +1,13 @@
+import re
 import sys
 import json
 from pathlib import Path
 from datetime import datetime
 from collections import defaultdict
+
+
+to_avoid = ["submission", "moderators"]
+chars_to_remove = ["\n"]
 
 
 def read_json_file(file_path):
@@ -11,40 +16,62 @@ def read_json_file(file_path):
     return json.loads(data)
 
 
-def append_post_to_file(file_name, s1, s2):
+def save_json_to_file(json_obj, filename):
     try:
-        with open(file_name, 'a') as file:
-            file.write("author:\n")
-            file.write(s1 + '\n')
-            file.write("comments:\n")
-            file.write(s2 + '\n')
-            file.write("------\n")
+        with open(filename, 'w', encoding='utf-8') as file:
+            json.dump(json_obj, file, separators=(",", ":"), ensure_ascii=False)
+        print(f'JSON object saved to {filename} successfully.')
     except Exception as e:
-        print(f"Error: {e}")
+        print(f'Error: {e}')
+
+
+"""
+Return str without charaters from string list chars_to_remove
+"""
+def clean_str(str, chars_to_remove):
+    for char in chars_to_remove:
+        str = str.replace(char, " ")
+    url_pattern = r'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*'
+    cleaned_string = re.sub(url_pattern, ' ', str)
+    return cleaned_string
+
+
+"""
+Return true if string does not contain any element from the string list elements
+"""
+def contains_element(string, elements):
+    return any(element in string for element in elements)
 
 
 class RawParser:
     def __init__(self):
         pass
 
-    def parse_posts_and_write(self, raw_file_path, parsed_file_path):
-        raw_data = read_json_file(raw_file_path)
-        subs = set(raw_data["subList"])
-        data = raw_data["data"]
-        for sub_name in subs:
-            print(f"parsing sub {sub_name}")
-            posts = data[sub_name]
+    """
+    Extract the necessary information and create the new structure
+    """
+    def transform_json(self, input):
+        output = {
+            "date": input["date"],
+            "subList": input["subList"],
+            "data": defaultdict(dict)
+        }
+        for sub, posts in input["data"].items():
+            print(sub)
             for post_id, post in posts.items():
-                print(f"post {post_id}")
-                post_text = post["selftext"]
-                comments_list = []
-                for comment_id, comment in post["comments"].items():
-                    comments_list.append(comment["body"])
-                append_post_to_file(parsed_file_path, post_text, ". ".join(comments_list))
+                if (len(post["comments"].values()) > 0):
+                    comments = [comment["body"].lower() if not contains_element(comment["body"].lower(), to_avoid) else "" for comment in post["comments"].values()]
+                    post_content = post["title"] + " >> " + ".. ".join(comments)
+                    output["data"][post_id] = clean_str(post_content, chars_to_remove)
+        return output
 
 
-
+"""
+arg1: input file
+"""
 if __name__ == "__main__":
     print(f"Launched on {datetime.now().strftime('%y%m%dT%H%M%S')} with args={sys.argv}")
     rp = RawParser()
-    parsed_data = rp.parse_posts_and_write(sys.argv[1], f"{sys.argv[1]}_parsed.txt")
+    json_in = read_json_file(sys.argv[1])
+    json_out = rp.transform_json(json_in)
+    save_json_to_file(json_out, "parsed_" + sys.argv[1])
