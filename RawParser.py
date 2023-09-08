@@ -74,4 +74,4 @@ if __name__ == "__main__":
     rp = RawParser()
     json_in = read_json_file(sys.argv[1])
     json_out = rp.transform_json(json_in)
-    save_json_to_file(json_out, "parsed_" + sys.argv[1])
+    save_json_to_file(json_out, f"parsed_{sys.argv[1]}")

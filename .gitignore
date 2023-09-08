@@ -164,3 +164,4 @@ test.py
 credentials.json
 [0-9]*
 *parsed*
+*example*
