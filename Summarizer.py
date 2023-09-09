@@ -22,11 +22,12 @@ def save_json_to_file(json_obj, filename):
 
 
 class Summarizer:
-    def __init__(self, host, instruction):
+    def __init__(self, host, instruction, seed):
         self.host = host
         self.uri = f'http://{self.host}/api/v1/chat'
         self.instruction = instruction
         self.history = {'internal': [], 'visible': []}
+        self.seed = seed
 
     def run(self, user_input, history):
         request = {
@@ -76,8 +77,7 @@ class Summarizer:
             'mirostat_eta': 0.1,
             'guidance_scale': 1,
             'negative_prompt': '',
-
-            'seed': -1,
+            'seed': self.seed,
             'add_bos_token': True,
             'truncation_length': 2048,
             'ban_eos_token': False,
@@ -96,8 +96,10 @@ class Summarizer:
             "subList": input["subList"],
             "data": defaultdict(dict)
         }
+        i = 0
         for post_id, post_text in json["data"].items():
-            print(f"processing {post_id}")
+            i = i + 1
+            print(f"processing {i} on {len(json['data'].values())}")
             output["data"][post_id] = self.run(f"{self.instruction} {post_text}", self.history)
         return output
 
@@ -110,8 +112,9 @@ if __name__ == "__main__":
     print(f"Launched on {datetime.now().strftime('%y%m%dT%H%M%S')} with args={sys.argv}")
 
     credentials = read_json_file(sys.argv[1])
-    instruction = "Write a very short summary of the following sentences:"
-    su = Summarizer(credentials["host"], instruction)
+    seed = 759718164
+    instruction = "Here are messages exchanged by different persons, you should write a very short summary in 3 bullet points, highlighting the important subject:"
+    su = Summarizer(credentials["host"], instruction, seed)
 
     input = read_json_file(sys.argv[2])
     summary = su.summarize(input)
