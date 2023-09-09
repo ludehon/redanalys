@@ -109,6 +109,8 @@ arg1: credentials file
 arg2: json to summarize
 """
 if __name__ == "__main__":
+    if (len(sys.argv) != 2):
+        print(f"USAGE: python Summarizer.py credentials.json parsed_yyMMdd.json"); sys.exit()
     print(f"Launched on {datetime.now().strftime('%y%m%dT%H%M%S')} with args={sys.argv}")
 
     credentials = read_json_file(sys.argv[1])

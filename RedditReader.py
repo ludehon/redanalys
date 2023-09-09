@@ -100,6 +100,8 @@ arg2: saves path
 arg3: post limit
 """
 if __name__ == "__main__":
+    if (len(sys.argv) != 3):
+        print(f"USAGE: python RedditReader.py credentials.json saves_path post_limit"); sys.exit()
     print(f"Launched on {datetime.now().strftime('%y%m%dT%H%M%S')} with args={sys.argv}")
     rr = RedditReader(sys.argv[1])
     all_posts = rr.get_comments_from_subreddit(["stocks", "wallstreetbets", "investing", "stockmarket"], int(sys.argv[3]))
