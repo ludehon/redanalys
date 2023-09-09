@@ -1,10 +1,24 @@
 # REDANALYSIS
-Saves reddit posts into json.
-Requires a Reddit developper access.
 
-## Launch
+## Features
+- Saves reddit posts into json
+- Parse and clean posts/comments
+- Summarize posts/comments
+
+## Requirements
+- Reddit developper access
+- OogaBooga API access
+Informations must be filled into a json credentials file, format :
+{
+    "client_id":"",
+    "client_secret":"",
+    "user_agent":"",
+    "host": "",
+    "subreddits": ["", ""]
+}
+
+## Usage
 python3 RedditReader.py credentials_path saves_path post_limit
-ex: python3 RedditReader.py /home/foobar/credentials.json /home/foobar/saves 10
 
 ## Saves format:
 {
@@ -21,8 +35,13 @@ ex: python3 RedditReader.py /home/foobar/credentials.json /home/foobar/saves 10
                 "created_utc": 1693717143.0,
                 "selftext": "post_text",
                 "comments": {
-                    "789hij": {
-                        "id": "789hij",
+                    "dddddd": {
+                        "id": "dddddd",
+                        "body": "comment_text",
+                        "created_utc": 1693717144.0
+                    },
+                    "eeeeee": {
+                        "id": "eeeeee",
                         "body": "comment_text",
                         "created_utc": 1693717144.0
                     }
@@ -31,3 +50,18 @@ ex: python3 RedditReader.py /home/foobar/credentials.json /home/foobar/saves 10
         }
     }
 }
+
+## Parsed format:
+{
+    "date": "230903",
+    "subList": [
+        "sub1",
+        "sub2"
+    ],
+    "data": {
+        "123abc": "parsed post and comments"
+    }
+}
+
+## Summarized format:
+same as parsed format

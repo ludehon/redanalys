@@ -70,8 +70,10 @@ class RawParser:
 arg1: input file
 """
 if __name__ == "__main__":
+    if (len(sys.argv) != 2):
+        print(f"USAGE: python RawParser.py yyMMdd.json"); sys.exit()
     print(f"Launched on {datetime.now().strftime('%y%m%dT%H%M%S')} with args={sys.argv}")
     rp = RawParser()
     json_in = read_json_file(sys.argv[1])
     json_out = rp.transform_json(json_in)
-    save_json_to_file(json_out, "parsed_" + sys.argv[1])
+    save_json_to_file(json_out, f"parsed_{sys.argv[1]}")

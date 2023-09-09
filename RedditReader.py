@@ -38,8 +38,7 @@ def merge_complex_dicts(dict1, dict2):
 
 
 class RedditReader:
-    def __init__(self, credentials_fileName):
-        credentials = read_json_file(credentials_fileName)
+    def __init__(self, credentials):
         self.reddit = praw.Reddit(
             client_id = credentials.get("client_id"),
             client_secret = credentials.get("client_secret"),
@@ -59,7 +58,6 @@ class RedditReader:
             subreddit = self.reddit.subreddit(subreddit_name)
             post_list = list(subreddit.new(limit=post_limit))
 
-            posts_json = {}
             # post level
             for post_number, post in enumerate(post_list):
                 if (datetime.utcfromtimestamp(post.created_utc).date() != datetime.utcnow().date()):
@@ -91,8 +89,6 @@ class RedditReader:
                 all_posts["data"][subreddit_name][post.id] = post_dict
         return all_posts
 
-    def save_comments(self):
-        pass
 
 """
 arg1: credentials
@@ -100,9 +96,15 @@ arg2: saves path
 arg3: post limit
 """
 if __name__ == "__main__":
+    if (len(sys.argv) != 4):
+        print(f"USAGE: python RedditReader.py credentials.json saves_path post_limit"); sys.exit()
     print(f"Launched on {datetime.now().strftime('%y%m%dT%H%M%S')} with args={sys.argv}")
-    rr = RedditReader(sys.argv[1])
-    all_posts = rr.get_comments_from_subreddit(["stocks", "wallstreetbets", "investing", "stockmarket"], int(sys.argv[3]))
+
+    credentials = read_json_file(sys.argv[1])
+    rr = RedditReader(credentials)
+
+    all_posts = rr.get_comments_from_subreddit(credentials["subreddits"], int(sys.argv[3]))
+    
     file_path = Path(all_posts["date"])
     if file_path.exists():
         print(f"merging data from {all_posts['date']}")
