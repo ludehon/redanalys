@@ -96,7 +96,7 @@ arg2: saves path
 arg3: post limit
 """
 if __name__ == "__main__":
-    if (len(sys.argv) != 3):
+    if (len(sys.argv) != 4):
         print(f"USAGE: python RedditReader.py credentials.json saves_path post_limit"); sys.exit()
     print(f"Launched on {datetime.now().strftime('%y%m%dT%H%M%S')} with args={sys.argv}")
 
