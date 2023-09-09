@@ -1,4 +1,5 @@
 # REDANALYSIS
+
 ## Features
 - Saves reddit posts into json
 - Parse and clean posts/comments
@@ -18,7 +19,6 @@ Informations must be filled into a json credentials file, format :
 
 ## Usage
 python3 RedditReader.py credentials_path saves_path post_limit
-
 
 ## Saves format:
 {
