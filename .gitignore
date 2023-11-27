@@ -160,7 +160,7 @@ cython_debug/
 #.idea/
 
 *.json
-test.py
+test*
 credentials.json
 [0-9]*
 *parsed*

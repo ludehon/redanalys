@@ -18,7 +18,8 @@ Informations must be filled into a json credentials file, format :
 
 ## Usage
 python3 RedditReader.py credentials_path saves_path post_limit
-
+python3 RawParser.py filename.json
+python3 Summarizer.py credentials.json parsed_yyMMdd.json
 
 ## Saves format:
 {
@@ -65,3 +66,6 @@ python3 RedditReader.py credentials_path saves_path post_limit
 
 ## Summarized format:
 same as parsed format
+
+## Workflow
+RedditReader > RawParser > Summarizer
