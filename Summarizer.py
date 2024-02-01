@@ -20,14 +20,19 @@ def save_json_to_file(json_obj, filename):
     except Exception as e:
         print(f'Error: {e}')
 
-
+"""
+param host: uri of the oogabooga host (openAI API)
+param instruction: instruction string that is appended before the message content
+param seed: seed used for the model
+"""
 class Summarizer:
-    def __init__(self, host, instruction, seed):
+    def __init__(self, host, instruction, seed, max_new_tokens=300):
         self.host = host
         self.uri = f'http://{self.host}/v1/chat/completions'
         self.instruction = instruction
         self.seed = seed
         self.headers = {"Content-Type": "application/json"}
+        self.max_new_tokens = max_new_tokens
 
     def run(self, str):
         history = [{"role": "user", "content": self.instruction + str}]
@@ -35,7 +40,10 @@ class Summarizer:
             "messages": history,
             'mode': 'instruct',
             'temperature': 0.1,
-            'max_new_tokens': 250,
+            'max_new_tokens': self.max_new_tokens,
+            'seed': self.seed,
+            'top_k': 5,
+            'top_p': 0.1
             # 'auto_max_new_tokens': False,
             # 'max_tokens_second': 0,
             # 'character': 'Example',
@@ -46,7 +54,6 @@ class Summarizer:
             # 'chat_instruct_command': 'Continue the chat dialogue below. Write a single reply for the character "<|character|>".\n\n<|prompt|>',
             # 'preset': 'None',
             # 'do_sample': True,
-            # 'top_p': 0.1,
             # 'typical_p': 1,
             # 'epsilon_cutoff': 0,  # In units of 1e-4
             # 'eta_cutoff': 0,  # In units of 1e-4
@@ -54,7 +61,6 @@ class Summarizer:
             # 'top_a': 0,
             # 'repetition_penalty': 1.18,
             # 'repetition_penalty_range': 0,
-            # 'top_k': 40,
             # 'min_length': 0,
             # 'no_repeat_ngram_size': 0,
             # 'num_beams': 1,
@@ -66,7 +72,6 @@ class Summarizer:
             # 'mirostat_eta': 0.1,
             # 'guidance_scale': 1,
             # 'negative_prompt': '',
-            # 'seed': self.seed,
             # 'add_bos_token': True,
             # 'truncation_length': 2048,
             # 'ban_eos_token': False,

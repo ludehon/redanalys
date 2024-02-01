@@ -160,8 +160,8 @@ cython_debug/
 #.idea/
 
 *.json
+*.txt
 test*
-credentials.json
 [0-9]*
 *parsed*
 *example*
