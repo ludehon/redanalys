@@ -119,10 +119,10 @@ class Summarizer:
     param input_string: the text to slice and summarize
     """
     def summarize_string_slices(self, summarizer, input_string):
-        logging.info(f"Processing input string, word count : {len(input_string.split(' '))}")
+        logging.debug(f"summarizing string slices, word count : {len(input_string.split(' '))}")
         summarized_slices = []
         for i, slice in enumerate(self.slice_text(input_string, 1000, 0.30)):
-            logging.debug(f"    processing slice {i}")
+            logging.debug(f"    sum slice {i}")
             cleaned_slice = clean_str(slice, "\n")
             summarized_slice = summarizer.summarize_string(cleaned_slice)
             summarized_slices.append(summarized_slice)
@@ -138,7 +138,7 @@ class Summarizer:
     def sum_big_text(self, su, text):
         i = 1
         start_time = time.time()
-        while (len(text.split(' '))>300 or i>1000):
+        while (len(text.split(' '))>500 or i<5):
             logging.debug(f"step {i}, wc is {len(text.split(' '))}")
             text = self.summarize_string_slices(su, text)
             i=i+1
@@ -189,7 +189,7 @@ class Summarizer:
         i = 0
         for post_id, post_text in json["data"].items():
             i = i + 1
-            logging.debug(f"processing {i} on {len(json['data'].values())}")
+            logging.info(f"processing post {i} on {len(json['data'].values())}")
             if (len(post_text.split(' '))>300):
                 self.sum_big_text(self, post_text)
             else:
