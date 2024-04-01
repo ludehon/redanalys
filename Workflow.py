@@ -10,10 +10,8 @@ from RawParser import RawParser, read_json_file, save_json_to_file
 def compare_folders(folder1, folder2):
     files1 = os.listdir(folder1)
     files2 = os.listdir(folder2)
-    print(">>>")
-    print(len(files1))
-    filenames1 = {filename.split('.')[0] for filename in files1}
-    filenames2 = {filename.split('.')[0] for filename in files2}
+    filenames1 = {filename.split('.')[0] for filename in files1 if not filename.startswith('.')}
+    filenames2 = {filename.split('.')[0] for filename in files2 if not filename.startswith('.')}
     difference = filenames1 - filenames2
     return [filename + '.json' for filename in difference]
 
