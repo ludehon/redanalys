@@ -182,8 +182,8 @@ class Summarizer:
     """
     def summarize_json(self, json):
         output = {
-            "date": input["date"],
-            "subList": input["subList"],
+            "date": json["date"],
+            "subList": json["subList"],
             "data": defaultdict(dict)
         }
         i = 0
