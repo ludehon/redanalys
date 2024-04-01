@@ -57,7 +57,6 @@ class RawParser:
             "data": defaultdict(dict)
         }
         for sub, posts in input["data"].items():
-            print(sub)
             for post_id, post in posts.items():
                 if (len(post["comments"].values()) > 0):
                     comments = [comment["body"].lower() if not contains_element(comment["body"].lower(), to_avoid) else "" for comment in post["comments"].values()]

@@ -164,4 +164,5 @@ cython_debug/
 test*
 [0-9]*
 *parsed*
+./parsed
 *example*
