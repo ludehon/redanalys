@@ -138,7 +138,7 @@ class Summarizer:
     def sum_big_text(self, su, text):
         i = 1
         start_time = time.time()
-        while (len(text.split(' '))>500 or i<5):
+        while (len(text.split(' '))>500 and i<5):
             logging.debug(f"step {i}, wc is {len(text.split(' '))}")
             text = self.summarize_string_slices(su, text)
             i=i+1
