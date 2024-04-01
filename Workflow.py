@@ -2,9 +2,12 @@ import os
 import sys
 import logging
 from datetime import datetime
+from utils import setup_logging
 from Summarizer import Summarizer
-from RawParser import RawParser, read_json_file, save_json_to_file
+from RawParser import RawParser
+from utils import read_json_file, save_json_to_file
 
+setup_logging()
 
 # Find the filenames that are in folder1 but not in folder2
 def compare_folders(folder1, folder2):
@@ -19,7 +22,9 @@ def compare_folders(folder1, folder2):
 if __name__ == "__main__":
     if (len(sys.argv) != 4):
         print(f"USAGE: python Workflow.py credentials.json folder_path mode=['parse', 'sum', 'both']"); sys.exit()
-    print(f"Launched on {datetime.now().strftime('%y%m%dT%H%M%S')} with args={sys.argv}")
+    logging.info(f"Launched on {datetime.now().strftime('%y%m%dT%H%M%S')} with args={sys.argv}")
+
+    setup_logging()
 
     credentials = read_json_file(sys.argv[1])
     folder_path = sys.argv[2]
@@ -41,8 +46,9 @@ if __name__ == "__main__":
         su = Summarizer(credentials["host"], instruction, seed)
 
         to_sum = compare_folders(f"{folder_path}/parsed", f"{folder_path}/summed")
-        print(len(to_sum))
-        # for filename in to_sum[:5]:
-        #     input = read_json_file(f"{folder_path}/parsed/{filename}")
-        #     summary = su.summarize_json(input)
-        #     save_json_to_file(summary, f"{folder_path}/summed")
+        logging.info(f"Files to summarize : {len(to_sum)}")
+        for filename in to_sum[:5]:
+            logging.info(f"summarizing file {filename}")
+            input = read_json_file(f"{folder_path}/parsed/{filename}")
+            summary = su.summarize_json(input)
+            save_json_to_file(summary, f"{folder_path}/summed")

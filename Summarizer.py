@@ -6,22 +6,11 @@ import logging
 import requests
 from datetime import datetime
 from RawParser import clean_str
+from utils import setup_logging
 from collections import defaultdict
+from utils import read_json_file, save_json_to_file
 
-
-def read_json_file(file_path):
-    with open(file_path, "r") as f:
-        data = f.read()
-    return json.loads(data)
-
-
-def save_json_to_file(json_obj, filename):
-    try:
-        with open(filename, 'w', encoding='utf-8') as file:
-            json.dump(json_obj, file, separators=(",", ":"), ensure_ascii=False)
-        logging.info(f'JSON object saved to {filename} successfully.')
-    except Exception as e:
-        logging.error(f'Error: {e}')
+setup_logging()
 
 
 """

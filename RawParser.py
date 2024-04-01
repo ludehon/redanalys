@@ -1,28 +1,17 @@
 import re
 import sys
 import json
+import logging
 from pathlib import Path
 from datetime import datetime
+from utils import setup_logging
 from collections import defaultdict
+
+setup_logging()
 
 
 to_avoid = ["submission", "moderators"]
 chars_to_remove = ["\n"]
-
-
-def read_json_file(file_path):
-    with open(file_path, "r") as f:
-        data = f.read()
-    return json.loads(data)
-
-
-def save_json_to_file(json_obj, filename):
-    try:
-        with open(filename, 'w', encoding='utf-8') as file:
-            json.dump(json_obj, file, separators=(",", ":"), ensure_ascii=False)
-        print(f'JSON object saved to {filename} successfully.')
-    except Exception as e:
-        print(f'Error: {e}')
 
 
 """
