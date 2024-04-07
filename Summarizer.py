@@ -6,11 +6,9 @@ import logging
 import requests
 from datetime import datetime
 from RawParser import clean_str
-from utils import setup_logging
+from utils import setup_logging, setup_logging
 from collections import defaultdict
 from utils import read_json_file, save_json_to_file
-
-setup_logging()
 
 
 """
@@ -27,14 +25,6 @@ class Summarizer:
         self.headers = {"Content-Type": "application/json"}
         self.max_new_tokens = max_new_tokens
 
-        log_filename = datetime.now().strftime("log_%Y-%m-%d_%H-%M-%S.log")
-        logging.basicConfig(
-            level=logging.DEBUG,
-            format='%(asctime)s - %(levelname)s - %(message)s',
-            filename=log_filename,
-            filemode='a'
-        )
-
 
     def run(self, str):
         history = [{"role": "user", "content": self.instruction + str}]
@@ -46,39 +36,6 @@ class Summarizer:
             'seed': self.seed,
             'top_k': 5,
             'top_p': 0.1
-            # 'auto_max_new_tokens': False,
-            # 'max_tokens_second': 0,
-            # 'character': 'Example',
-            # 'instruction_template': 'Vicuna-v1.1',  # Will get autodetected if unset
-            # 'your_name': 'You',
-            # 'regenerate': False,
-            # '_continue': False,
-            # 'chat_instruct_command': 'Continue the chat dialogue below. Write a single reply for the character "<|character|>".\n\n<|prompt|>',
-            # 'preset': 'None',
-            # 'do_sample': True,
-            # 'typical_p': 1,
-            # 'epsilon_cutoff': 0,  # In units of 1e-4
-            # 'eta_cutoff': 0,  # In units of 1e-4
-            # 'tfs': 1,
-            # 'top_a': 0,
-            # 'repetition_penalty': 1.18,
-            # 'repetition_penalty_range': 0,
-            # 'min_length': 0,
-            # 'no_repeat_ngram_size': 0,
-            # 'num_beams': 1,
-            # 'penalty_alpha': 0,
-            # 'length_penalty': 1,
-            # 'early_stopping': False,
-            # 'mirostat_mode': 0,
-            # 'mirostat_tau': 5,
-            # 'mirostat_eta': 0.1,
-            # 'guidance_scale': 1,
-            # 'negative_prompt': '',
-            # 'add_bos_token': True,
-            # 'truncation_length': 2048,
-            # 'ban_eos_token': False,
-            # 'skip_special_tokens': True,
-            # 'stopping_strings': []
         }
 
         response = requests.post(self.uri, headers=self.headers, json=data)
@@ -88,7 +45,7 @@ class Summarizer:
         else:
             logging.error(f"Error when contacting API. Code : {response.status_code}")
             logging.error(f"Error response : {response}")
-            sys.exit(1)
+            return "api_error"
 
 
     """
@@ -130,7 +87,7 @@ class Summarizer:
 
 
     """
-    Summarize large text
+    Summarize large text by slicing it
     :param su: summarize object
     :param text: text to summarize
     :return string: summarized text
@@ -144,7 +101,8 @@ class Summarizer:
             i=i+1
         end_time = time.time()
         time_spent = end_time - start_time
-        logging.info(f"Time spent summarazing: {time_spent/60} minutes")
+        logging.debug(f"Time spent summarazing: {time_spent/60} minutes")
+        return text
 
         
     """
@@ -152,18 +110,16 @@ class Summarizer:
         "date": "230903",
         "subList": [],
         "data": {
-            "sub1": {
-                "123abc": {
-                    "id": "123abc",
-                    "title": "post_title",
-                    "created_utc": 1693717143.0,
-                    "selftext": "post_text",
-                    "comments": {
-                        "dddddd": {
-                            "id": "dddddd",
-                            "body": "comment_text",
-                            "created_utc": 1693717144.0
-                        }
+            "123abc": {
+                "id": "123abc",
+                "title": "post_title",
+                "created_utc": 1693717143.0,
+                "selftext": "post_text",
+                "comments": {
+                    "dddddd": {
+                        "id": "dddddd",
+                        "body": "comment_text",
+                        "created_utc": 1693717144.0
                     }
                 }
             }
@@ -191,10 +147,11 @@ class Summarizer:
             i = i + 1
             logging.info(f"processing post {i} on {len(json['data'].values())}")
             if (len(post_text.split(' '))>300):
-                self.sum_big_text(self, post_text)
+                output["data"][post_id] = self.sum_big_text(self, post_text)
             else:
                 output["data"][post_id] = self.run(post_text)
         return output
+
     
     def summarize_string(self, str):
         output = self.run(str)
