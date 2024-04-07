@@ -166,3 +166,4 @@ test*
 *parsed*
 ./parsed
 *example*
+.DS_Store

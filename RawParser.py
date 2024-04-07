@@ -4,10 +4,8 @@ import json
 import logging
 from pathlib import Path
 from datetime import datetime
-from utils import setup_logging
+from utils import setup_logging, setup_logging
 from collections import defaultdict
-
-setup_logging()
 
 
 to_avoid = ["submission", "moderators"]

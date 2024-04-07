@@ -2,7 +2,7 @@ import os
 import sys
 import logging
 from datetime import datetime
-from utils import setup_logging
+from utils import setup_logging, setup_logging
 from Summarizer import Summarizer
 from RawParser import RawParser
 from utils import read_json_file, save_json_to_file
@@ -24,8 +24,6 @@ if __name__ == "__main__":
         print(f"USAGE: python Workflow.py credentials.json folder_path mode=['parse', 'sum', 'both']"); sys.exit()
     logging.info(f"Launched on {datetime.now().strftime('%y%m%dT%H%M%S')} with args={sys.argv}")
 
-    setup_logging()
-
     credentials = read_json_file(sys.argv[1])
     folder_path = sys.argv[2]
     mode = sys.argv[3]
@@ -42,13 +40,13 @@ if __name__ == "__main__":
     if (mode in ["sum", "both"]):
         # Summarize parsed data
         seed = 759718164
-        instruction = "Here are messages exchanged by different persons, write a very short summary in few bullet points, highlighting the most important and relevant details:"
+        instruction = "Here are messages exchanged by different persons, write a very short summary in 3 bullet points, keeping only the most important and relevant details:"
         su = Summarizer(credentials["host"], instruction, seed)
 
         to_sum = compare_folders(f"{folder_path}/parsed", f"{folder_path}/summed")
         logging.info(f"Files to summarize : {len(to_sum)}")
-        for filename in to_sum[:5]:
+        for filename in to_sum:
             logging.info(f"summarizing file {filename}")
             input = read_json_file(f"{folder_path}/parsed/{filename}")
             summary = su.summarize_json(input)
-            save_json_to_file(summary, f"{folder_path}/summed")
+            save_json_to_file(summary, f"{folder_path}/summed/{filename}")

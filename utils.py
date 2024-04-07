@@ -2,9 +2,29 @@ import json
 import logging
 from datetime import datetime
 
+
 def setup_logging():
+    # Create a logger
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+
+    # Create formatter
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
+    # File handler
     log_filename = datetime.now().strftime("log_%Y-%m-%d_%H-%M.log")
-    logging.basicConfig(filename=log_filename, level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+    file_handler = logging.FileHandler(log_filename)
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(formatter)
+
+    # Console (stream) handler
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
+    console_handler.setFormatter(formatter)
+
+    # Add handlers to the logger
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
 
 def read_json_file(file_path):
     with open(file_path, "r") as f:
